@@ -37,6 +37,9 @@ The **YouTube Comments Sentiment Analyzer** is a web application that retrieves 
 
 ![image](https://github.com/user-attachments/assets/49c94d2b-a3fb-48bb-b356-2c100584d66c)
 
+![image](https://github.com/user-attachments/assets/7b1434ff-6b13-4420-bc73-0105aabfd9da)
+
+
 
 ### Backend:
 - **Python** (Flask Framework)
