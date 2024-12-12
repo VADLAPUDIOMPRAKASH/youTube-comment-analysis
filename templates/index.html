@@ -1,0 +1,173 @@
+<!-- API_KEY = 'AIzaSyAc2Z3XBQs5-gGe4gYognTnTBTNHkmGZUA' -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Comments Sentiment Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="profile-card" onclick="window.open('https://vadlapudiomprakash.github.io/my-portfolio/', '_blank')">
+        
+        <div class="profile-details">
+            <h2>Om Prakash Vadlapudi</h2>
+            <p>Python Developer | Data Analyst</p>
+            <div class="profile-social">
+                <a href="https://github.com/vadlapudiomprakash" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/vadlapudi-om-prakash" target="_blank">LinkedIn</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>YouTube Comments Sentiment Analyzer</h1>
+        
+        <form id="analysis-form" class="url-form">
+            <input 
+                type="text" 
+                name="youtube_url" 
+                placeholder="Enter YouTube Video URL" 
+                required
+                pattern="^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$"
+            >
+            <button type="submit">Analyze Comments</button>
+        </form>
+
+        <!-- Loader -->
+        <div id="loader" class="loader-container" style="display: none;">
+            <div class="loader-stages">
+                <div class="loader-stage" id="stage-video">Fetching Video Details...</div>
+                <div class="loader-stage" id="stage-comments">Fetching Comments...</div>
+                <div class="loader-stage" id="stage-translate">Translating Comments...</div>
+                <div class="loader-stage" id="stage-analyze">Analyzing Sentiments...</div>
+                <div class="loader-stage" id="stage-visualize">Generating Visualization...</div>
+            </div>
+            <div class="loader-spinner"></div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="results" class="results" style="display: none;">
+            <h2>Analysis Results</h2>
+            <div class="result-grid">
+                <div class="result-card">
+                    <h3>Total Comments</h3>
+                    <p id="total-comments">0</p>
+                </div>
+                <div class="result-card">
+                    <h3>Translated Comments</h3>
+                    <p id="translated-comments">0</p>
+                </div>
+            </div>
+
+            <h3>Sentiment Distribution</h3>
+            <div id="sentiment-chart" class="sentiment-chart">
+                <!-- Sentiment bars will be dynamically added here -->
+            </div>
+
+            <div id="conclusion" class="conclusion">
+                <h3>Analysis Conclusion</h3>
+                <p id="conclusion-text"></p>
+            </div>
+
+            <div id="sample-comments" class="sample-comments">
+                <h3>Sample Comments</h3>
+                <div id="sample-comments-list"></div>
+            </div>
+        </div>
+
+        <!-- Error Container -->
+        <div id="error" class="alert error" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('analysis-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Reset previous results
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            
+            // Show loader
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+
+            // Animate loader stages
+            const stages = ['video', 'comments', 'translate', 'analyze', 'visualize'];
+            stages.forEach((stage, index) => {
+                setTimeout(() => {
+                    document.getElementById(`stage-${stage}`).classList.add('active');
+                }, index * 1000);
+            });
+
+            // Send AJAX request
+            const formData = new FormData(this);
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loader
+                loader.style.display = 'none';
+
+                if (data.error) {
+                    // Show error
+                    const errorDiv = document.getElementById('error');
+                    errorDiv.textContent = data.error;
+                    errorDiv.style.display = 'block';
+                } else {
+                    // Show results
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.style.display = 'block';
+
+                    // Populate results
+                    document.getElementById('total-comments').textContent = data.total_comments;
+                    document.getElementById('translated-comments').textContent = data.translated_comments;
+
+                    // Sentiment Chart
+                    const sentimentChart = document.getElementById('sentiment-chart');
+                    sentimentChart.innerHTML = ''; // Clear previous
+                    Object.entries(data.sentiments).forEach(([sentiment, count]) => {
+                        const bar = document.createElement('div');
+                        bar.className = `sentiment-bar ${sentiment.toLowerCase()}`;
+                        bar.innerHTML = `
+                            <span class="label">${sentiment}</span>
+                            <span class="count">${count}</span>
+                        `;
+                        sentimentChart.appendChild(bar);
+                    });
+
+                    // Conclusion
+                    document.getElementById('conclusion-text').textContent = data.conclusion;
+
+                    // Sample Comments
+                    const sampleCommentsList = document.getElementById('sample-comments-list');
+                    sampleCommentsList.innerHTML = ''; // Clear previous
+                    data.sample_comments.forEach(comment => {
+                        const commentEl = document.createElement('div');
+                        commentEl.className = `sample-comment ${comment.sentiment.toLowerCase()}`;
+                        commentEl.innerHTML = `
+                            <span class="comment-text">${comment.text}</span>
+                            <span class="comment-sentiment">${comment.sentiment}</span>
+                        `;
+                        sampleCommentsList.appendChild(commentEl);
+                    });
+                }
+            })
+            .catch(error => {
+                // Hide loader
+                loader.style.display = 'none';
+                
+                // Show error
+                const errorDiv = document.getElementById('error');
+                errorDiv.textContent = 'An unexpected error occurred';
+                errorDiv.style.display = 'block';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
