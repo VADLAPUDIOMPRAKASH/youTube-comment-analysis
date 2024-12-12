@@ -34,6 +34,10 @@ The **YouTube Comments Sentiment Analyzer** is a web application that retrieves 
 - **HTML5**, **CSS3**, **JavaScript**
 - AJAX for communicating with the backend
 
+
+![image](https://github.com/user-attachments/assets/49c94d2b-a3fb-48bb-b356-2c100584d66c)
+
+
 ### Backend:
 - **Python** (Flask Framework)
 - **APIs:** YouTube Data API, Google Translate API
