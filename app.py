@@ -5,6 +5,7 @@ import re
 import nltk
 from deep_translator import GoogleTranslator
 from nltk.sentiment import SentimentIntensityAnalyzer
+import os
 
 # Download VADER lexicon
 nltk.download('vader_lexicon')
@@ -155,5 +156,5 @@ def analyze_video():
         return jsonify({'error': f"An error occurred: {str(e)}"})
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 10000))  # Render uses 10000 by default
-    app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 5000))  # Use the Render-assigned port
+    app.run(debug=True, host='0.0.0.0', port=port)
