@@ -13,7 +13,7 @@ nltk.download('vader_lexicon')
 app = Flask(__name__)
 
 # API Configuration (IMPORTANT: Replace with your actual API key)
-API_KEY = 'YOUR YOUTUBE API KEY'
+API_KEY = 'AIzaSyAc2Z3XBQs5-gGe4gYognTnTBTNHkmGZUA'
 YOUTUBE_API_SERVICE_NAME = 'youtube'
 YOUTUBE_API_VERSION = 'v3'
 
