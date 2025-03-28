@@ -51,6 +51,7 @@ prompt_toolkit==3.0.48
 proto-plus==1.25.0
 protobuf==5.29.1
 pure_eval==0.2.3
+pandas==2.2.2
 pyasn1==0.6.1
 pyasn1_modules==0.4.1
 Pygments==2.18.0
